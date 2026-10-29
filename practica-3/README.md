@@ -78,9 +78,9 @@ grabaciones en el repositorio.
 
 ## 5. Evidencia
 
-![[Captura de pantalla 2026-10-09 073418.png]]
+<img width="663" height="411" alt="Captura de pantalla 2026-10-09 073430" src="https://github.com/user-attachments/assets/6962e57c-add9-4c44-94c9-1334d7030da0" />
+<img width="664" height="383" alt="Captura de pantalla 2026-10-09 073418" src="https://github.com/user-attachments/assets/4214e138-d70c-4224-94e6-8c11418d868e" />
 
-![[Captura de pantalla 2026-10-09 073430.png]]
 
 **Github @M4zapan77**
 
