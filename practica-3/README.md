@@ -9,12 +9,12 @@
 
 ## 👥 Integrantes
 
-| Nombre completo | Matrícula |
-|-----------------|-----------|
-| Diego Isaac Rico Hernández| 198492-8|
-| César Iván Macías Anguiano |198553-7
-|Ernesto Tehuintle Ramírez|198626-6|
-|Sebastián Guerrero Ambriz|197113-2|
+| Nombre completo | 
+|-----------------|
+| Diego Isaac Rico Hernández|
+| César Iván Macías Anguiano |
+|Ernesto Tehuintle Ramírez|
+|Sebastián Guerrero Ambriz|
 
 ## 1. Caso de uso
 
