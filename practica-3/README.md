@@ -81,3 +81,6 @@ grabaciones en el repositorio.
 ![[Captura de pantalla 2026-10-09 073418.png]]
 
 ![[Captura de pantalla 2026-10-09 073430.png]]
+
+**Github @M4zapan77**
+
