@@ -82,5 +82,5 @@ grabaciones en el repositorio.
 <img width="664" height="383" alt="Captura de pantalla 2026-10-09 073418" src="https://github.com/user-attachments/assets/4214e138-d70c-4224-94e6-8c11418d868e" />
 
 
-**Github @M4zapan77**
+
 
