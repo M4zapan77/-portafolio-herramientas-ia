@@ -1,86 +1,85 @@
 # ClipQuest
 
-> Buscar escenas en grabaciones de videojuegos
+> Buscar escenas en grabaciones de videojuegos a partir de una descripción en inglés.
 
-**Proyecto integrador · Herramientas de IA**
+**Proyecto integrador · Herramientas de Procesamiento para IA**
 
-**Grupo:** B1·
-**Equipo:** 1
+## Equipo
 
-## 👥 Integrantes
+**Grupo:** B · **Equipo:** 1
 
-| Nombre completo | 
-|-----------------|
-| Diego Isaac Rico Hernández|
+| Nombre completo |
+| --- |
+| Diego Isaac Rico Hernández |
 | César Iván Macías Anguiano |
-|Ernesto Tehuintle Ramírez|
-|Sebastián Guerrero Ambriz|
+| Ernesto Tehuintle Ramírez |
+| Sebastián Guerrero Ambriz |
 
 ## 1. Caso de uso
 
-Jugadores y creadores de contenido necesitan **localizar escenas** sin revisar toda su partida. El
-usuario cargará un video de hasta *cinco minutos* y escribirá una descripción breve en inglés. Recibirá
-marcas de tiempo y vistas previas de los momentos visualmente más relacionados para facilitar su
-edición.
+Jugadores y creadores de contenido necesitan **localizar escenas** sin revisar toda su partida. La propuesta de ClipQuest es recibir un video de hasta cinco minutos y una descripción breve en inglés para buscar los momentos visualmente más relacionados.
 
-- **Entrada:** video y fotos del gameplay
-- **Salida:** clip exacto con relacion a lo buscado
-
-  El diagrama debe mostrar **qué entra**, **qué modelo lo procesa** y **qué sale**, igual que en tu caso de uso.
-6. En tu nota `Bitácora`, agrega un enlace a `[[README]]` y marca como hecha la casilla que corresponda.
-7. Revisa la lista de verificación.
+- **Entrada:** un video de gameplay y una descripción de la escena en inglés.
+- **Procesamiento:** extraer fotogramas y comparar su contenido con la descripción mediante CLIP.
+- **Salida:** marcas de tiempo y vistas previas de las escenas más relacionadas, para facilitar la selección de clips.
 
 ## 🔀 Cómo funciona
+
 ```mermaid
 flowchart TD
-    A([Inicio]) --> B[Cargar modelo CLIP,openIA/clip-vit-bae-patch]
-    B --> C[Ingresar fuente]
-    C --> D{¿Es imagen o video?}
-    D -->|Imagen| E[Procesar imagen]
-    D -->|Video| F[Extraer fotogramas]
-    D -->|No válido| C
-    F --> E
-    E --> G[Ejecutar modelo CLIP]
-    G --> H[Obtener resultados]
-    H --> I[Mostrar clasificación]
-    I --> J([Fin])
+    A([Inicio]) --> B[/Video de gameplay y descripción en inglés/]
+    B --> C{¿El video es válido?}
+    C -->|No| B
+    C -->|Sí| D[Extraer fotogramas y conservar sus tiempos]
+    D --> E["CLIP: openai/clip-vit-base-patch32"]
+    E --> F[Comparar la descripción con cada fotograma]
+    F --> G[Ordenar los resultados por similitud]
+    G --> H[/Marcas de tiempo y vistas previas/]
+    H --> I([Fin])
 ```
 
+El modelo compara imagen y texto. La extracción de fotogramas y la presentación de sus tiempos son pasos de la aplicación.
 
 ## 2. Modelo abierto elegido
 
-| Dato                         | Respuesta                                                                        |
-| ---------------------------- | -------------------------------------------------------------------------------- |
-| Identificador                | [openIA/clip-vit-bae-patch](https://huggingface.co/openai/clip-vit-base-patch32) |
-| Tarea (pipeline tag)         | `zero-shot-image-classification`                                                 |
-| Número de parámetros         | 151.28 millones                                                                  |
-| Licencia                     | MIT                                                                              |
-| Limitación o sesgo declarado | Dificultades para distinguir categorías muy específicas y contar objetos         |
+| Dato | Respuesta |
+| --- | --- |
+| Identificador | `openai/clip-vit-base-patch32` |
+| Model Card | [Ficha del modelo en Hugging Face](https://huggingface.co/openai/clip-vit-base-patch32) |
+| Tarea (pipeline tag) | `zero-shot-image-classification` |
+| Uso en el proyecto | Comparar fotogramas del video con una descripción en inglés |
+| Número de parámetros | Aproximadamente 151.28 millones |
+| Licencia | MIT, según el [repositorio oficial de CLIP](https://github.com/openai/CLIP/blob/main/LICENSE) |
+| Limitación o sesgo declarado | Dificultad para distinguir categorías muy específicas y contar objetos; el rendimiento depende de las categorías utilizadas |
+
+Usaremos descripciones en inglés, el idioma para el que se entrenó y evaluó el modelo según su Model Card.
 
 ## 3. Viabilidad de hardware
 
+Estimación de memoria para los pesos del modelo en precisión FP16, con dos bytes por parámetro:
+
 $$
-\text{Memoria mínima} = 151,280,000 \times 2\ \text{bytes} \approx \ 0.303 \ \text{GB}
+M_{\text{pesos, FP16}} = 151{,}280{,}000 \times 2\ \text{bytes}
+= 302{,}560{,}000\ \text{bytes} \approx 0.303\ \text{GB}
 $$
 
-- **VRAM disponible en Colab:** 15,360 MiB (Tesla T4)
-- **Dónde se ejecuta:** Colab con GPU
-- **Por qué:** Procesaremos fotogramas en lotes
-pequeños para controlar la memoria.
+Esta cifra corresponde únicamente a los pesos. La ejecución también requiere memoria para los fotogramas, las activaciones y las librerías.
+
+- **GPU observada en la práctica:** Tesla T4 de Colab, con 15,360 MiB de VRAM total según la captura.
+- **Dónde se propone ejecutar:** Colab con GPU.
+- **Cómo se controlará la memoria:** procesar los fotogramas en lotes pequeños.
 
 ## 4. Riesgo ético
 
-- **Riesgo:** las grabaciones pueden mostrar conversaciones o datos personales. Usaremos videos
-propios o autorizados, eliminaremos los archivos temporales al terminar y no publicaremos las
-grabaciones en el repositorio.
-
-- **Mitigación:** Utilizar únicamente videos propios o autorizados, evitar grabar información personal o conversaciones privadas, difuminar cualquier dato sensible que aparezca y eliminar los archivos temporales al finalizar el proyecto. Además, no subir las grabaciones al repositorio para proteger la privacidad de las personas.
+- **Riesgo:** las grabaciones pueden mostrar conversaciones, nombres de usuario u otros datos personales.
+- **Mitigación:** utilizar videos propios o autorizados, evitar conversaciones privadas, ocultar los datos sensibles y eliminar los archivos temporales al terminar. Las grabaciones no se publicarán en el repositorio.
 
 ## 5. Evidencia
 
-<img width="663" height="411" alt="Captura de pantalla 2026-10-09 073430" src="https://github.com/user-attachments/assets/6962e57c-add9-4c44-94c9-1334d7030da0" />
-<img width="664" height="383" alt="Captura de pantalla 2026-10-09 073418" src="https://github.com/user-attachments/assets/4214e138-d70c-4224-94e6-8c11418d868e" />
+Captura de la Model Card de `openai/clip-vit-base-patch32`, consultada durante la práctica:
 
+![Captura de la Model Card de CLIP en Hugging Face](captura-model-card.png)
 
+Captura de la GPU y la memoria reportadas en Colab durante la práctica:
 
-
+![Evidencia de una Tesla T4 con 15360 MiB de VRAM en Colab](captura-gpu-colab.png)
