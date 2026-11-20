@@ -28,6 +28,7 @@ if __name__ == "__main__":
         fn=clasificar,
         inputs=gr.Image(type="pil", image_mode="RGB", label="Imagen"),
         outputs=gr.Label(num_top_classes=3, label="Predicciones"),
-        title="Clasificador de imágenes",
+        title="¿Qué hay en la foto?",
+        description="El modelo MobileNet V2 (google/mobilenet_v2_1.0_224) clasifica la imagen.",
     )
     app.launch()
