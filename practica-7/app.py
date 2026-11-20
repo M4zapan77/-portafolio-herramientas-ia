@@ -1,4 +1,5 @@
 from pathlib import Path
+from time import perf_counter
 
 import gradio as gr
 import torch
@@ -17,12 +18,17 @@ def clasificar(imagen):
         raise gr.Error("Sube una imagen para clasificarla.")
 
     entradas = procesador(images=imagen, return_tensors="pt")
-    probabilidades = modelo(**entradas).logits[0].softmax(dim=0)
+    inicio = perf_counter()
+    logits = modelo(**entradas).logits
+    segundos = perf_counter() - inicio
+
+    probabilidades = logits[0].softmax(dim=0)
     valores, indices = probabilidades.topk(3)
-    return {
+    etiquetas = {
         modelo.config.id2label[indice]: probabilidad
         for indice, probabilidad in zip(indices.tolist(), valores.tolist())
     }
+    return etiquetas, f"{segundos:.2f} s"
 
 
 if __name__ == "__main__":
@@ -35,7 +41,10 @@ if __name__ == "__main__":
     app = gr.Interface(
         fn=clasificar,
         inputs=gr.Image(type="pil", image_mode="RGB", label="Imagen"),
-        outputs=gr.Label(num_top_classes=3, label="Predicciones"),
+        outputs=[
+            gr.Label(num_top_classes=3, label="Predicciones"),
+            gr.Textbox(label="Tiempo del modelo en CPU", interactive=False),
+        ],
         title="¿Qué hay en la foto?",
         description="El modelo MobileNet V2 (google/mobilenet_v2_1.0_224) clasifica la imagen.",
         examples=ejemplos,
